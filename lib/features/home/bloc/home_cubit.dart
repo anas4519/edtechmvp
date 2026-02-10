@@ -65,7 +65,7 @@ class HomeCubit extends Cubit<HomeState> {
       title: 'SQL + Data Engineering',
       subtitle: 'Learn SQL + DE Foundations Basics to Advanced',
       iconName: 'storage',
-      colorValue: 0xFF3B82F6,
+      colorValue: 0xFF0F9D8E,
       progress: 0.0,
       totalTopics: 80,
       completedTopics: 0,
@@ -76,7 +76,7 @@ class HomeCubit extends Cubit<HomeState> {
       title: 'OOPs',
       subtitle: 'Learn Object Oriented Programming',
       iconName: 'category',
-      colorValue: 0xFFA855F7,
+      colorValue: 0xFF0F9D8E,
       progress: 0.0,
       totalTopics: 30,
       completedTopics: 0,
@@ -86,7 +86,7 @@ class HomeCubit extends Cubit<HomeState> {
       state.copyWith(
         featuredCourses: [dsaCourse, lldCourse, allPremiumCourse],
         dsaCourses: [dsaCourse, allPremiumCourse],
-        designCourses: [sqlCourse, oopsCourse, lldCourse],
+        designCourses: [lldCourse, sqlCourse, oopsCourse],
         isLoading: false,
       ),
     );

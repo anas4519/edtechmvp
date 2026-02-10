@@ -8,7 +8,7 @@ class LldRepository {
       title: 'Low Level Design',
       subtitle: 'Learn LLD and Design Patterns',
       iconName: 'design',
-      colorValue: 0xFF7C3AED,
+      colorValue: 0xFFE2703A,
       progress: 0.12,
       totalTopics: 20,
       completedTopics: 2,

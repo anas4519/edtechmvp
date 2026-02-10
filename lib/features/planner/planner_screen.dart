@@ -16,24 +16,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-  // Mock streak data – days the user solved problems
-  final Set<int> _streakDays = {
-    1,
-    2,
-    3,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-  };
+  final Set<int> _streakDays = {1, 2, 3, 7, 8, 9, 10};
 
   @override
   Widget build(BuildContext context) {
@@ -65,12 +48,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
               focusedDay: _focusedDay,
               selectedDay: _selectedDay,
               streakDays: _streakDays,
-              onDaySelected: (selected, focused) {
-                setState(() {
-                  _selectedDay = selected;
-                  _focusedDay = focused;
-                });
-              },
+
               onFormatChanged: (format) {
                 setState(() {
                   _calendarFormat = format;
@@ -101,9 +79,6 @@ class _PlannerScreenState extends State<PlannerScreen> {
   }
 }
 
-// ──────────────────────────────────────────────
-// Progress Section
-// ──────────────────────────────────────────────
 class _ProgressSection extends StatelessWidget {
   final bool isDark;
   final ThemeData theme;
@@ -272,9 +247,6 @@ class _DifficultyRow extends StatelessWidget {
   }
 }
 
-// ──────────────────────────────────────────────
-// Calendar Section
-// ──────────────────────────────────────────────
 class _CalendarSection extends StatelessWidget {
   final bool isDark;
   final ThemeData theme;
@@ -282,7 +254,6 @@ class _CalendarSection extends StatelessWidget {
   final DateTime focusedDay;
   final DateTime? selectedDay;
   final Set<int> streakDays;
-  final Function(DateTime, DateTime) onDaySelected;
   final Function(CalendarFormat) onFormatChanged;
 
   const _CalendarSection({
@@ -292,7 +263,6 @@ class _CalendarSection extends StatelessWidget {
     required this.focusedDay,
     required this.selectedDay,
     required this.streakDays,
-    required this.onDaySelected,
     required this.onFormatChanged,
   });
 
@@ -315,38 +285,52 @@ class _CalendarSection extends StatelessWidget {
         calendarFormat: calendarFormat,
         startingDayOfWeek: StartingDayOfWeek.monday,
         selectedDayPredicate: (day) => isSameDay(selectedDay, day),
-        onDaySelected: onDaySelected,
         onFormatChanged: onFormatChanged,
         calendarBuilders: CalendarBuilders(
           defaultBuilder: (context, day, focusedDay) {
-            final hasStreak =
-                streakDays.contains(day.day) &&
-                day.month == DateTime.now().month;
+            final now = DateTime.now();
+            final isCurrentMonth =
+                day.month == now.month && day.year == now.year;
+            final hasStreak = streakDays.contains(day.day) && isCurrentMonth;
+            final isPast = isCurrentMonth && day.day < now.day;
+            final isMissed = isPast && !hasStreak;
+
+            // Past days: emoji only. Future/other days: number only.
+            if (hasStreak) {
+              return Container(
+                margin: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.amber.withValues(alpha: 0.15),
+                ),
+                child: const Center(
+                  child: Text('🔥', style: TextStyle(fontSize: 18)),
+                ),
+              );
+            } else if (isMissed) {
+              return Container(
+                margin: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.red.withValues(alpha: 0.08),
+                ),
+                child: const Center(
+                  child: Text('😭', style: TextStyle(fontSize: 18)),
+                ),
+              );
+            }
+
+            // Future / other month days: show number
             return Container(
               margin: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: hasStreak
-                    ? AppColors.amber.withValues(alpha: 0.15)
-                    : null,
-              ),
               child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (hasStreak)
-                      const Text('🔥', style: TextStyle(fontSize: 10)),
-                    Text(
-                      '${day.day}',
-                      style: GoogleFonts.inter(
-                        fontSize: hasStreak ? 11 : 13,
-                        fontWeight: hasStreak
-                            ? FontWeight.w600
-                            : FontWeight.w400,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  '${day.day}',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: theme.colorScheme.onSurface,
+                  ),
                 ),
               ),
             );
@@ -423,9 +407,6 @@ class _CalendarSection extends StatelessWidget {
   }
 }
 
-// ──────────────────────────────────────────────
-// Streak Section
-// ──────────────────────────────────────────────
 class _StreakSection extends StatelessWidget {
   final bool isDark;
 
@@ -434,7 +415,8 @@ class _StreakSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkCard : AppColors.lightCard,
         borderRadius: BorderRadius.circular(16),
@@ -443,112 +425,107 @@ class _StreakSection extends StatelessWidget {
           width: 0.5,
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Current streak
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkCardAlt : AppColors.lightCardAlt,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                Text(
-                  'Current  🔥 ',
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: isDark ? AppColors.textGray : AppColors.textMuted,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            // Current streak
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkCardAlt : AppColors.lightCardAlt,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Current 🔥 ',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: isDark ? AppColors.textGray : AppColors.textMuted,
+                    ),
                   ),
-                ),
-                Text(
-                  '1',
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: isDark ? AppColors.textWhite : AppColors.textDark,
+                  Text(
+                    '1',
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? AppColors.textWhite : AppColors.textDark,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          // Divider
-          Container(
-            width: 1,
-            height: 24,
-            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-          ),
-          const SizedBox(width: 8),
-          // Max streak
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkCardAlt : AppColors.lightCardAlt,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                Text(
-                  'Max  🔥 ',
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: isDark ? AppColors.textGray : AppColors.textMuted,
-                  ),
-                ),
-                Text(
-                  '12',
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: isDark ? AppColors.textWhite : AppColors.textDark,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Spacer(),
-          // Leaderboard button
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkCardAlt : AppColors.lightCardAlt,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                ],
               ),
             ),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.emoji_events_rounded,
-                  size: 16,
-                  color: AppColors.amber,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  'Leaderboard',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: isDark ? AppColors.textGray : AppColors.textMuted,
+            const SizedBox(width: 8),
+            // Max streak
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkCardAlt : AppColors.lightCardAlt,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Max 🔥 ',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: isDark ? AppColors.textGray : AppColors.textMuted,
+                    ),
                   ),
-                ),
-              ],
+                  Text(
+                    '12',
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? AppColors.textWhite : AppColors.textDark,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(width: 8),
+            // Leaderboard button
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkCardAlt : AppColors.lightCardAlt,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.emoji_events_rounded,
+                    size: 14,
+                    color: AppColors.amber,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Leaderboard',
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: isDark ? AppColors.textGray : AppColors.textMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-// ──────────────────────────────────────────────
-// Leaderboard Section
-// ──────────────────────────────────────────────
 class _LeaderboardSection extends StatelessWidget {
   final bool isDark;
   final ThemeData theme;
@@ -693,9 +670,6 @@ class _RankAvatar extends StatelessWidget {
   }
 }
 
-// ──────────────────────────────────────────────
-// Daily Planner Section
-// ──────────────────────────────────────────────
 class _DailyPlannerSection extends StatelessWidget {
   final bool isDark;
   final ThemeData theme;
