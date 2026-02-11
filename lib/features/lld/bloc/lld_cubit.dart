@@ -29,4 +29,20 @@ class LldCubit extends Cubit<LldState> {
     final topics = LldRepository.getTopics();
     emit(state.copyWith(topics: topics, isLoading: false));
   }
+
+  void toggleConcept(String topicId, String conceptId) {
+    final updatedTopics = state.topics.map((topic) {
+      if (topic.id != topicId) return topic;
+      final updatedProblems = topic.problems.map((p) {
+        if (p.id != conceptId) return p;
+        return p.copyWith(isCompleted: !p.isCompleted);
+      }).toList();
+      final completed = updatedProblems.where((p) => p.isCompleted).length;
+      return topic.copyWith(
+        problems: updatedProblems,
+        completedProblems: completed,
+      );
+    }).toList();
+    emit(state.copyWith(topics: updatedTopics));
+  }
 }

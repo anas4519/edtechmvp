@@ -17,6 +17,7 @@ dependencies:
   percent_indicator: ^4.2.5
   table_calendar: ^3.2.0
   line_icons: ^2.0.3
+  cached_video_player_plus: ^3.0.3
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,5 @@
 import '../models/topic.dart';
+import '../models/problem.dart';
 import '../models/course.dart';
 
 class LldRepository {
@@ -30,6 +31,36 @@ class LldRepository {
             'These principles form the foundation of clean, maintainable code.',
         totalProblems: 5,
         completedProblems: 3,
+        problems: [
+          Problem(
+            id: 'solid1',
+            title: 'Single Responsibility Principle',
+            difficulty: Difficulty.easy,
+            isCompleted: true,
+          ),
+          Problem(
+            id: 'solid2',
+            title: 'Open/Closed Principle',
+            difficulty: Difficulty.easy,
+            isCompleted: true,
+          ),
+          Problem(
+            id: 'solid3',
+            title: 'Liskov Substitution Principle',
+            difficulty: Difficulty.medium,
+            isCompleted: true,
+          ),
+          Problem(
+            id: 'solid4',
+            title: 'Interface Segregation Principle',
+            difficulty: Difficulty.medium,
+          ),
+          Problem(
+            id: 'solid5',
+            title: 'Dependency Inversion Principle',
+            difficulty: Difficulty.medium,
+          ),
+        ],
       ),
       Topic(
         id: 'lld2',
@@ -44,6 +75,35 @@ class LldRepository {
             'These patterns deal with object creation mechanisms.',
         totalProblems: 5,
         completedProblems: 2,
+        problems: [
+          Problem(
+            id: 'creat1',
+            title: 'Singleton Pattern',
+            difficulty: Difficulty.easy,
+            isCompleted: true,
+          ),
+          Problem(
+            id: 'creat2',
+            title: 'Factory Method Pattern',
+            difficulty: Difficulty.medium,
+            isCompleted: true,
+          ),
+          Problem(
+            id: 'creat3',
+            title: 'Abstract Factory Pattern',
+            difficulty: Difficulty.medium,
+          ),
+          Problem(
+            id: 'creat4',
+            title: 'Builder Pattern',
+            difficulty: Difficulty.medium,
+          ),
+          Problem(
+            id: 'creat5',
+            title: 'Prototype Pattern',
+            difficulty: Difficulty.easy,
+          ),
+        ],
       ),
       Topic(
         id: 'lld3',
@@ -58,6 +118,33 @@ class LldRepository {
             'These patterns deal with object composition.',
         totalProblems: 5,
         completedProblems: 0,
+        problems: [
+          Problem(
+            id: 'struct1',
+            title: 'Adapter Pattern',
+            difficulty: Difficulty.medium,
+          ),
+          Problem(
+            id: 'struct2',
+            title: 'Decorator Pattern',
+            difficulty: Difficulty.medium,
+          ),
+          Problem(
+            id: 'struct3',
+            title: 'Facade Pattern',
+            difficulty: Difficulty.easy,
+          ),
+          Problem(
+            id: 'struct4',
+            title: 'Proxy Pattern',
+            difficulty: Difficulty.medium,
+          ),
+          Problem(
+            id: 'struct5',
+            title: 'Composite Pattern',
+            difficulty: Difficulty.hard,
+          ),
+        ],
       ),
       Topic(
         id: 'lld4',
@@ -72,6 +159,33 @@ class LldRepository {
             'These patterns deal with communication between objects.',
         totalProblems: 5,
         completedProblems: 0,
+        problems: [
+          Problem(
+            id: 'behav1',
+            title: 'Observer Pattern',
+            difficulty: Difficulty.medium,
+          ),
+          Problem(
+            id: 'behav2',
+            title: 'Strategy Pattern',
+            difficulty: Difficulty.easy,
+          ),
+          Problem(
+            id: 'behav3',
+            title: 'Command Pattern',
+            difficulty: Difficulty.medium,
+          ),
+          Problem(
+            id: 'behav4',
+            title: 'State Pattern',
+            difficulty: Difficulty.medium,
+          ),
+          Problem(
+            id: 'behav5',
+            title: 'Template Method Pattern',
+            difficulty: Difficulty.hard,
+          ),
+        ],
       ),
       Topic(
         id: 'lld5',
@@ -86,6 +200,13 @@ class LldRepository {
             'Focus on class design, interfaces, and SOLID principles.',
         totalProblems: 1,
         completedProblems: 0,
+        problems: [
+          Problem(
+            id: 'park1',
+            title: 'Parking Lot System Design',
+            difficulty: Difficulty.hard,
+          ),
+        ],
       ),
       Topic(
         id: 'lld6',
@@ -100,6 +221,13 @@ class LldRepository {
             'Implement using clean OOP principles.',
         totalProblems: 1,
         completedProblems: 0,
+        problems: [
+          Problem(
+            id: 'ttt1',
+            title: 'Tic Tac Toe Game Design',
+            difficulty: Difficulty.medium,
+          ),
+        ],
       ),
       Topic(
         id: 'lld7',
@@ -114,6 +242,13 @@ class LldRepository {
             'Handle concurrent booking scenarios.',
         totalProblems: 1,
         completedProblems: 0,
+        problems: [
+          Problem(
+            id: 'bms1',
+            title: 'Movie Ticket Booking System',
+            difficulty: Difficulty.hard,
+          ),
+        ],
       ),
       Topic(
         id: 'lld8',
@@ -128,6 +263,13 @@ class LldRepository {
             'Focus on scheduling algorithms and state management.',
         totalProblems: 1,
         completedProblems: 0,
+        problems: [
+          Problem(
+            id: 'elev1',
+            title: 'Elevator System Design',
+            difficulty: Difficulty.hard,
+          ),
+        ],
       ),
       Topic(
         id: 'lld9',
@@ -141,6 +283,13 @@ class LldRepository {
             '• Win condition detection',
         totalProblems: 1,
         completedProblems: 0,
+        problems: [
+          Problem(
+            id: 'snl1',
+            title: 'Snake and Ladder Game Design',
+            difficulty: Difficulty.medium,
+          ),
+        ],
       ),
       Topic(
         id: 'lld10',
@@ -155,6 +304,13 @@ class LldRepository {
             '• Chain of Responsibility for dispensing',
         totalProblems: 1,
         completedProblems: 0,
+        problems: [
+          Problem(
+            id: 'atm1',
+            title: 'ATM Machine System Design',
+            difficulty: Difficulty.hard,
+          ),
+        ],
       ),
     ];
   }

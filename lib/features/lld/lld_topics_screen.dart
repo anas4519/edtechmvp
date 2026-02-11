@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants/app_colors.dart';
 import 'bloc/lld_cubit.dart';
-import 'lld_topic_detail.dart';
+import 'lld_concepts_screen.dart';
 
 class LldTopicsScreen extends StatelessWidget {
   const LldTopicsScreen({super.key});
@@ -52,7 +52,10 @@ class _LldTopicsView extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => LldTopicDetail(topic: topic),
+                      builder: (_) => BlocProvider.value(
+                        value: context.read<LldCubit>(),
+                        child: LldConceptsScreen(topic: topic),
+                      ),
                     ),
                   );
                 },

@@ -1,5 +1,6 @@
 import '../models/topic.dart';
 import '../models/problem.dart';
+import '../models/problem_content.dart';
 import '../models/course.dart';
 
 class DsaRepository {
@@ -360,6 +361,90 @@ class DsaRepository {
         title: 'Two Sum',
         difficulty: Difficulty.medium,
         isCompleted: true,
+        description:
+            'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice.',
+        examples: [
+          ProblemExample(
+            input: 'Input: nums = [2,7,11,15], target = 9',
+            output: 'Output: [0,1]',
+            explanation: 'Because nums[0] + nums[1] == 9, we return [0, 1].',
+          ),
+          ProblemExample(
+            input: 'Input: nums = [3,2,4], target = 6',
+            output: 'Output: [1,2]',
+          ),
+        ],
+        hints: ['Try using a hash map to store elements you have seen.'],
+        companyTags: ['Amazon', 'Google', 'Facebook', 'Apple'],
+        practiceOptions: [
+          PracticeOption(label: '[0, 1]', isCorrect: true),
+          PracticeOption(label: '[1, 2]'),
+          PracticeOption(label: '[0, 2]'),
+          PracticeOption(label: '[1, 3]'),
+        ],
+        editorial: EditorialContent(
+          videoUrl:
+              'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+          approaches: [
+            Approach(
+              name: 'Brute Force',
+              intuition:
+                  'Check every pair of elements to see if their sum equals the target.',
+              code: '''vector<int> twoSum(vector<int>& nums, int target) {
+    for (int i = 0; i < nums.size(); i++) {
+        for (int j = i + 1; j < nums.size(); j++) {
+            if (nums[i] + nums[j] == target) {
+                return {i, j};
+            }
+        }
+    }
+    return {};
+}''',
+              timeComplexity: 'O(n²)',
+              spaceComplexity: 'O(1)',
+            ),
+            Approach(
+              name: 'Better (Sorting + Two Pointer)',
+              intuition:
+                  'Sort the array and use two pointers from both ends. Move the left pointer right if sum is too small, move right pointer left if sum is too large.',
+              code: '''vector<int> twoSum(vector<int>& nums, int target) {
+    vector<pair<int,int>> arr;
+    for (int i = 0; i < nums.size(); i++)
+        arr.push_back({nums[i], i});
+    sort(arr.begin(), arr.end());
+    int lo = 0, hi = arr.size() - 1;
+    while (lo < hi) {
+        int sum = arr[lo].first + arr[hi].first;
+        if (sum == target)
+            return {arr[lo].second, arr[hi].second};
+        else if (sum < target) lo++;
+        else hi--;
+    }
+    return {};
+}''',
+              timeComplexity: 'O(n log n)',
+              spaceComplexity: 'O(n)',
+            ),
+            Approach(
+              name: 'Optimal (Hash Map)',
+              intuition:
+                  'Use a hash map to store each element and its index. For each element, check if target - element exists in the map.',
+              code: '''vector<int> twoSum(vector<int>& nums, int target) {
+    unordered_map<int, int> mp;
+    for (int i = 0; i < nums.size(); i++) {
+        int complement = target - nums[i];
+        if (mp.find(complement) != mp.end()) {
+            return {mp[complement], i};
+        }
+        mp[nums[i]] = i;
+    }
+    return {};
+}''',
+              timeComplexity: 'O(n)',
+              spaceComplexity: 'O(n)',
+            ),
+          ],
+        ),
       ),
       Problem(
         id: 'p35',
@@ -428,9 +513,102 @@ class DsaRepository {
       ),
       Problem(
         id: 'p45',
-        title: 'Floor/Ceil in Sorted Array',
+        title: 'Floor and Ceil in Sorted Array',
         difficulty: Difficulty.easy,
         isCompleted: false,
+        description:
+            'Given a sorted array nums and an integer x. Find the floor and ceil of x in nums. The floor of x is the largest element in the array which is smaller than or equal to x. The ceiling of x is the smallest element in the array greater than or equal to x. If no floor or ceil exists, output -1.',
+        examples: [
+          ProblemExample(
+            input: 'Input : nums =[3, 4, 4, 7, 8, 10], x= 5',
+            output: 'Output: 4 7',
+            explanation:
+                'Explanation: The floor of 5 in the array is 4, and the ceiling of 5 in the array is 7.',
+          ),
+          ProblemExample(
+            input: 'Input : nums =[3, 4, 4, 7, 8, 10], x= 8',
+            output: 'Output: 8 8',
+            explanation:
+                'Explanation: The floor of 8 in the array is 8, and the ceiling of 8 is also 8.',
+          ),
+        ],
+        hints: ['Think about using binary search to find the position.'],
+        companyTags: ['Google', 'Amazon', 'Microsoft'],
+        practiceOptions: [
+          PracticeOption(label: '[2, 14]'),
+          PracticeOption(label: '[-1, 2]', isCorrect: true),
+          PracticeOption(label: '[-1, 14]'),
+          PracticeOption(label: '[2, -1]'),
+        ],
+        editorial: EditorialContent(
+          videoUrl:
+              'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+          approaches: [
+            Approach(
+              name: 'Brute Force',
+              intuition:
+                  'Linearly iterate through the array. For floor, find the largest element <= x. For ceil, find the smallest element >= x.',
+              code: '''int findFloor(vector<int>& nums, int x) {
+    int floor = -1;
+    for (int i = 0; i < nums.size(); i++) {
+        if (nums[i] <= x) {
+            floor = nums[i];
+        }
+    }
+    return floor;
+}
+
+int findCeil(vector<int>& nums, int x) {
+    int ceil = -1;
+    for (int i = 0; i < nums.size(); i++) {
+        if (nums[i] >= x) {
+            ceil = nums[i];
+            break;
+        }
+    }
+    return ceil;
+}''',
+              timeComplexity: 'O(n)',
+              spaceComplexity: 'O(1)',
+            ),
+            Approach(
+              name: 'Optimal (Binary Search)',
+              intuition:
+                  'Use binary search to find floor and ceil. For floor: if mid <= x, update floor and move right. For ceil: if mid >= x, update ceil and move left.',
+              code: '''pair<int,int> floorCeil(vector<int>& nums, int x) {
+    int lo = 0, hi = nums.size() - 1;
+    int floor = -1, ceil = -1;
+
+    // Find floor
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (nums[mid] <= x) {
+            floor = nums[mid];
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
+        }
+    }
+
+    // Find ceil
+    lo = 0; hi = nums.size() - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (nums[mid] >= x) {
+            ceil = nums[mid];
+            hi = mid - 1;
+        } else {
+            lo = mid + 1;
+        }
+    }
+
+    return {floor, ceil};
+}''',
+              timeComplexity: 'O(log n)',
+              spaceComplexity: 'O(1)',
+            ),
+          ],
+        ),
       ),
       Problem(
         id: 'p46',

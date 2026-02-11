@@ -4,13 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/models/topic.dart';
 import '../../data/models/problem.dart';
-import 'bloc/dsa_cubit.dart';
-import 'problem_detail_screen.dart';
+import 'bloc/lld_cubit.dart';
+import 'lld_topic_detail.dart';
 
-class DsaTopicScreen extends StatelessWidget {
+class LldConceptsScreen extends StatelessWidget {
   final Topic topic;
 
-  const DsaTopicScreen({super.key, required this.topic});
+  const LldConceptsScreen({super.key, required this.topic});
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +28,16 @@ class DsaTopicScreen extends StatelessWidget {
           style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 16),
         ),
       ),
-      body: BlocBuilder<DsaCubit, DsaState>(
+      body: BlocBuilder<LldCubit, LldState>(
         builder: (context, state) {
-          final currentTopic = state.steps.firstWhere(
+          final currentTopic = state.topics.firstWhere(
             (t) => t.id == topic.id,
             orElse: () => topic,
           );
 
           return Column(
             children: [
-              // Topic info header
+              // Stats header
               Container(
                 margin: const EdgeInsets.all(16),
                 padding: const EdgeInsets.all(16),
@@ -61,7 +61,7 @@ class DsaTopicScreen extends StatelessWidget {
                       isDark: isDark,
                     ),
                     _StatItem(
-                      label: 'Solved',
+                      label: 'Completed',
                       value: '${currentTopic.completedProblems}',
                       color: AppColors.success,
                       isDark: isDark,
@@ -77,33 +77,39 @@ class DsaTopicScreen extends StatelessWidget {
                 ),
               ),
 
-              // Problems list
+              // Concepts list
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: currentTopic.problems.length,
                   itemBuilder: (context, index) {
-                    final problem = currentTopic.problems[index];
+                    final concept = currentTopic.problems[index];
                     return GestureDetector(
                       onTap: () {
+                        // Navigate to the detail screen, passing a
+                        // Topic built from the concept so the detail
+                        // screen shows the concept title.
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => ProblemDetailScreen(
-                              problem: problem,
-                              hasPrevious: index > 0,
-                              hasNext: index < currentTopic.problems.length - 1,
+                            builder: (_) => LldTopicDetail(
+                              topic: Topic(
+                                id: concept.id,
+                                title: concept.title,
+                                totalProblems: 1,
+                                completedProblems: concept.isCompleted ? 1 : 0,
+                              ),
                             ),
                           ),
                         );
                       },
-                      child: _ProblemTile(
-                        problem: problem,
+                      child: _ConceptTile(
+                        concept: concept,
                         index: index,
                         isDark: isDark,
                         onToggle: () {
-                          context.read<DsaCubit>().toggleProblem(
+                          context.read<LldCubit>().toggleConcept(
                             topic.id,
-                            problem.id,
+                            concept.id,
                           );
                         },
                       ),
@@ -157,14 +163,14 @@ class _StatItem extends StatelessWidget {
   }
 }
 
-class _ProblemTile extends StatelessWidget {
-  final Problem problem;
+class _ConceptTile extends StatelessWidget {
+  final Problem concept;
   final int index;
   final bool isDark;
   final VoidCallback onToggle;
 
-  const _ProblemTile({
-    required this.problem,
+  const _ConceptTile({
+    required this.concept,
     required this.index,
     required this.isDark,
     required this.onToggle,
@@ -187,7 +193,7 @@ class _ProblemTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Green circle indicator for completion status
+          // Completion indicator
           GestureDetector(
             onTap: onToggle,
             child: Container(
@@ -195,26 +201,26 @@ class _ProblemTile extends StatelessWidget {
               height: 24,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: problem.isCompleted
+                color: concept.isCompleted
                     ? AppColors.success
                     : Colors.transparent,
                 border: Border.all(
-                  color: problem.isCompleted
+                  color: concept.isCompleted
                       ? AppColors.success
                       : (isDark ? AppColors.textGray : AppColors.textMuted),
                   width: 2,
                 ),
               ),
-              child: problem.isCompleted
+              child: concept.isCompleted
                   ? const Icon(Icons.circle, color: Colors.white, size: 14)
                   : null,
             ),
           ),
           const SizedBox(width: 12),
-          // Problem title
+          // Concept title
           Expanded(
             child: Text(
-              problem.title,
+              concept.title,
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -223,7 +229,7 @@ class _ProblemTile extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          // Bookmark / save icon
+          // Bookmark icon
           Icon(
             Icons.bookmark_border_rounded,
             size: 22,
