@@ -130,38 +130,68 @@ class _ProgressSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Circular indicator
-              CircularPercentIndicator(
-                radius: 48,
-                lineWidth: 8,
-                percent: 296 / 986,
-                center: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '296',
-                      style: GoogleFonts.inter(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.amber,
-                      ),
+              // Stacked circular indicators for multi-color progress
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Hard layer (Bottom - Red) - Represents Total Solved (Hard + Medium + Easy)
+                  CircularPercentIndicator(
+                    radius: 48,
+                    lineWidth: 8,
+                    percent: 296 / 986, // (60 + 119 + 117) / 986
+                    backgroundColor: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
+                    progressColor: AppColors.hard, // Red
+                    circularStrokeCap: CircularStrokeCap.round,
+                    animation: true,
+                    animationDuration: 800,
+                  ),
+                  // Medium layer (Middle - Amber) - Represents Medium + Easy
+                  CircularPercentIndicator(
+                    radius: 48,
+                    lineWidth: 8,
+                    percent: 179 / 986, // (60 + 119) / 986
+                    backgroundColor: Colors.transparent,
+                    progressColor: AppColors.medium, // Amber
+                    circularStrokeCap: CircularStrokeCap.round,
+                    animation: true,
+                    animationDuration: 800,
+                  ),
+                  // Easy layer (Top - Green) - Represents Easy only
+                  CircularPercentIndicator(
+                    radius: 48,
+                    lineWidth: 8,
+                    percent: 60 / 986,
+                    backgroundColor: Colors.transparent,
+                    progressColor: AppColors.easy, // Green
+                    circularStrokeCap: CircularStrokeCap.round,
+                    animation: true,
+                    animationDuration: 800,
+                    center: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '296',
+                          style: GoogleFonts.inter(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+                        Text(
+                          '986',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: isDark
+                                ? AppColors.textGray
+                                : AppColors.textMuted,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      '986',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: isDark
-                            ? AppColors.textGray
-                            : AppColors.textMuted,
-                      ),
-                    ),
-                  ],
-                ),
-                progressColor: AppColors.amber,
-                backgroundColor: isDark
-                    ? AppColors.darkBorder
-                    : AppColors.lightBorder,
-                circularStrokeCap: CircularStrokeCap.round,
+                  ),
+                ],
               ),
               const SizedBox(width: 32),
               // Difficulty breakdown

@@ -156,108 +156,66 @@ class _ProblemTile extends StatelessWidget {
     required this.onToggle,
   });
 
-  Color _difficultyColor() {
-    switch (problem.difficulty) {
-      case Difficulty.easy:
-        return AppColors.easy;
-      case Difficulty.medium:
-        return AppColors.medium;
-      case Difficulty.hard:
-        return AppColors.hard;
-    }
-  }
-
-  String _difficultyLabel() {
-    switch (problem.difficulty) {
-      case Difficulty.easy:
-        return 'Easy';
-      case Difficulty.medium:
-        return 'Medium';
-      case Difficulty.hard:
-        return 'Hard';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkCard : AppColors.lightCard,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: problem.isCompleted
-              ? AppColors.amber.withValues(alpha: 0.3)
-              : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
           width: 0.5,
         ),
       ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-        leading: GestureDetector(
-          onTap: onToggle,
-          child: Container(
-            width: 28,
-            height: 28,
-            decoration: BoxDecoration(
-              color: problem.isCompleted ? AppColors.amber : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: problem.isCompleted
-                    ? AppColors.amber
-                    : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-                width: 2,
-              ),
-            ),
-            child: problem.isCompleted
-                ? const Icon(Icons.check_rounded, color: Colors.white, size: 16)
-                : null,
-          ),
-        ),
-        title: Text(
-          problem.title,
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: theme.colorScheme.onSurface,
-            decoration: problem.isCompleted ? TextDecoration.lineThrough : null,
-            decorationColor: AppColors.textGray,
-          ),
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      child: Row(
+        children: [
+          // Green circle indicator for completion status
+          GestureDetector(
+            onTap: onToggle,
+            child: Container(
+              width: 24,
+              height: 24,
               decoration: BoxDecoration(
-                color: _difficultyColor().withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                _difficultyLabel(),
-                style: GoogleFonts.inter(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: _difficultyColor(),
+                shape: BoxShape.circle,
+                color: problem.isCompleted
+                    ? AppColors.success
+                    : Colors.transparent,
+                border: Border.all(
+                  color: problem.isCompleted
+                      ? AppColors.success
+                      : (isDark ? AppColors.textGray : AppColors.textMuted),
+                  width: 2,
                 ),
               ),
+              child: problem.isCompleted
+                  ? const Icon(Icons.circle, color: Colors.white, size: 14)
+                  : null,
             ),
-            const SizedBox(width: 8),
-            Icon(
-              Icons.article_outlined,
-              size: 18,
-              color: isDark ? AppColors.textGray : AppColors.textMuted,
+          ),
+          const SizedBox(width: 12),
+          // Problem title
+          Expanded(
+            child: Text(
+              problem.title,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: theme.colorScheme.onSurface,
+              ),
             ),
-            const SizedBox(width: 4),
-            Icon(
-              Icons.play_circle_outline_rounded,
-              size: 18,
-              color: isDark ? AppColors.textGray : AppColors.textMuted,
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 8),
+          // Bookmark / save icon
+          Icon(
+            Icons.bookmark_border_rounded,
+            size: 22,
+            color: isDark ? AppColors.textGray : AppColors.textMuted,
+          ),
+        ],
       ),
     );
   }

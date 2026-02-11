@@ -47,19 +47,6 @@ class _LldTopicsView extends StatelessWidget {
             itemCount: state.topics.length,
             itemBuilder: (context, index) {
               final topic = state.topics[index];
-              final colors = [
-                AppColors.amber,
-                AppColors.amber,
-                AppColors.info,
-                const Color(0xFFA855F7),
-                AppColors.success,
-                const Color(0xFFEC4899),
-                const Color(0xFF6366F1),
-                AppColors.warning,
-                const Color(0xFF14B8A6),
-                AppColors.error,
-              ];
-              final color = colors[index % colors.length];
 
               return GestureDetector(
                 onTap: () {
@@ -70,27 +57,26 @@ class _LldTopicsView extends StatelessWidget {
                   );
                 },
                 child: Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  padding: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: isDark ? AppColors.darkCard : AppColors.lightCard,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border(left: BorderSide(color: color, width: 3)),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.lightBorder,
+                      width: 0.5,
+                    ),
                   ),
                   child: Row(
                     children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: color.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Icon(
-                          _getTopicIcon(index),
-                          color: color,
-                          size: 24,
-                        ),
+                      Icon(
+                        _getTopicIcon(index),
+                        color: isDark
+                            ? AppColors.textGray
+                            : AppColors.textMuted,
+                        size: 22,
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -100,37 +86,28 @@ class _LldTopicsView extends StatelessWidget {
                             Text(
                               topic.title,
                               style: GoogleFonts.inter(
-                                fontSize: 15,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w600,
                                 color: theme.colorScheme.onSurface,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 3),
                             Row(
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 2,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: color.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    '${topic.totalProblems} ${topic.totalProblems == 1 ? 'concept' : 'concepts'}',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                      color: color,
-                                    ),
+                                Text(
+                                  '${topic.totalProblems} ${topic.totalProblems == 1 ? 'concept' : 'concepts'}',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 11,
+                                    color: isDark
+                                        ? AppColors.textGray
+                                        : AppColors.textMuted,
                                   ),
                                 ),
                                 if (topic.completedProblems > 0) ...[
                                   const SizedBox(width: 8),
                                   Icon(
                                     Icons.check_circle_rounded,
-                                    size: 14,
+                                    size: 13,
                                     color: AppColors.success,
                                   ),
                                   const SizedBox(width: 3),
@@ -152,7 +129,7 @@ class _LldTopicsView extends StatelessWidget {
                         color: isDark
                             ? AppColors.textGray
                             : AppColors.textMuted,
-                        size: 22,
+                        size: 20,
                       ),
                     ],
                   ),
