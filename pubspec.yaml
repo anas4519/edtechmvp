@@ -18,6 +18,7 @@ dependencies:
   table_calendar: ^3.2.0
   line_icons: ^2.0.3
   cached_video_player_plus: ^3.0.3
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

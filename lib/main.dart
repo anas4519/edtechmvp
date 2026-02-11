@@ -5,19 +5,22 @@ import 'core/theme/theme_bloc.dart';
 import 'features/home/bloc/home_cubit.dart';
 import 'features/navigation/main_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const TufApp());
+  final savedMode = await ThemeBloc.getSavedThemeMode();
+  runApp(TufApp(initialThemeMode: savedMode));
 }
 
 class TufApp extends StatelessWidget {
-  const TufApp({super.key});
+  final ThemeMode initialThemeMode;
+
+  const TufApp({super.key, required this.initialThemeMode});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => ThemeBloc()),
+        BlocProvider(create: (_) => ThemeBloc(initialMode: initialThemeMode)),
         BlocProvider(create: (_) => HomeCubit()..loadHome()),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(

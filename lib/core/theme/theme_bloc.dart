@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+const _themeKey = 'theme_mode';
 
 // Events
 abstract class ThemeEvent extends Equatable {
@@ -32,15 +35,29 @@ class ThemeState extends Equatable {
 
 // BLoC
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
-  ThemeBloc() : super(const ThemeState()) {
+  ThemeBloc({ThemeMode initialMode = ThemeMode.dark})
+    : super(ThemeState(themeMode: initialMode)) {
     on<ToggleTheme>(_onToggleTheme);
   }
 
-  void _onToggleTheme(ToggleTheme event, Emitter<ThemeState> emit) {
-    emit(
-      state.copyWith(
-        themeMode: state.isDark ? ThemeMode.light : ThemeMode.dark,
-      ),
+  /// Call before runApp to get the persisted theme instantly.
+  static Future<ThemeMode> getSavedThemeMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final stored = prefs.getString(_themeKey);
+    if (stored == 'light') return ThemeMode.light;
+    return ThemeMode.dark;
+  }
+
+  Future<void> _onToggleTheme(
+    ToggleTheme event,
+    Emitter<ThemeState> emit,
+  ) async {
+    final newMode = state.isDark ? ThemeMode.light : ThemeMode.dark;
+    emit(state.copyWith(themeMode: newMode));
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _themeKey,
+      newMode == ThemeMode.dark ? 'dark' : 'light',
     );
   }
 }
